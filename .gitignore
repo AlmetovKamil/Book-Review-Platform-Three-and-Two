@@ -1,0 +1,21 @@
+# .gitignore for Python Streamlit Poetry project
+
+# Python-specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Poetry-specific
+__pypackages__/
+.poetry/
+poetry.lock
+
+# Environment-specific
+venv/
+.env
+
+# Miscellaneous
+.DS_Store
+.idea/
+.vscode/
