@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_star_rating import st_star_rating
-from frontend.book import Book
+from app.book import Book
 
 st.sidebar.page_link("main.py", label="Home")
 if "selected_book" not in st.session_state.to_dict() or st.session_state.selected_book is None:

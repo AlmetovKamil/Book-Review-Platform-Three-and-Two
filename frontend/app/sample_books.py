@@ -1,4 +1,4 @@
-from frontend.book import Book
+from app.book import Book
 
 
 sample_books_json = [
