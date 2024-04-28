@@ -1,4 +1,5 @@
 import httpx
+import random
 
 from typing import List, Optional
 
@@ -90,7 +91,6 @@ class Books:
         params['limit'] = size
         params['fields'] = "key,title,author_name,first_publish_year,editions,cover_i, subject"
         async with httpx.AsyncClient() as client:
-            print(params)
             response = await client.get(url, params = params)
             response.raise_for_status()
             data = response.json()
@@ -101,3 +101,18 @@ class Books:
             result['data'] = books
             return result
 
+    @staticmethod
+    async def get_recommendation(book_id: str):
+        book = await Books.get_book_by_id(book_id)
+        tags = book.tags
+        author = book.author_name.split(",")[0]
+        if len(tags) == 0:
+            result = await Books.search_books(None, author, None, 1, 15)
+            return result
+        num_of_random_tags = random.randint(0, len(tags))
+        random_tags = random.sample(tags, num_of_random_tags)
+        print(tags)
+
+        print(random_tags)
+        result = await Books.search_books(None, None, random_tags, 1, 15)
+        return result

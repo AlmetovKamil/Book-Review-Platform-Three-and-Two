@@ -155,3 +155,7 @@ async def get_favorites(username:str, brief:bool, db: Session = Depends(get_db))
 async def get_recommendation(username:str,db: Session = Depends(get_db)):
     return
 
+@app.get("/check")
+async def check_function(book_id:str):
+    book = await Books.get_recommendation(book_id)
+    return book
