@@ -19,12 +19,14 @@ st.title("Book Review Platform (BRP)")
 sidebar_user_info()
 st.sidebar.divider()
 search_form()
-show_favorites = st.sidebar.checkbox("Favorites", key="show_favorites")
-if show_favorites:
+if st.sidebar.checkbox("Favorites", key="show_favorites"):
     books = BooksService.get_favorites()
     st.session_state["books"] = books
-elif "books" in st.session_state:
+    st.session_state['favorite'] = True
+elif "favorite" in st.session_state:
     del st.session_state["books"]
+    del st.session_state['favorite']
+    st.rerun()
 
 if "books" not in st.session_state:
     st.session_state["page_number"] = 1

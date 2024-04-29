@@ -17,7 +17,7 @@ def create_access_token(payload):
 
 test_username = "test_user"
 test_book_id = "OL7353617M"
-test_token = create_access_token({"username": test_username})
+test_token = create_access_token({"email": test_username})
 test_auth_header = {'Authorization': test_token}
 
 
