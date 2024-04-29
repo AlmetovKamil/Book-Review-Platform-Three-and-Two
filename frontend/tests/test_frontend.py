@@ -4,6 +4,8 @@ import jwt
 from streamlit.testing.v1 import AppTest
 
 from app.models.user import User
+from app.models.book import Book
+from tests.sample_books import sample_books_json
 
 
 def create_access_token(payload):
@@ -21,6 +23,8 @@ test_user = User(username=test_username, created_at=datetime.datetime.today())
 at = AppTest.from_file("../app/main.py", default_timeout=5)
 at.session_state["user"] = test_user
 at.session_state["token"] = {"id_token": test_token}
+at.session_state["books"] = \
+    [Book(**json_book) for json_book in sample_books_json]
 at.run()
 
 
