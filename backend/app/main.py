@@ -6,7 +6,7 @@ import app.database.database as database
 import jwt
 from app.service.books import Books
 import httpx
-from fastapi import Request
+from fastapi import Request, Query
 from fastapi.responses import JSONResponse
 from typing import List, Optional
 import uvicorn
@@ -88,16 +88,8 @@ def get_or_create_user(
 
 
 @app.get("/search_books")
-async def search_books(
-    name: Optional[str] = None,
-    author: Optional[str] = None,
-    tags: List[str] = None,
-    page: int = 1,
-    size: int = 1,
-):
-    result = await Books.search_books(
-        name=name, author=author, tags=tags, page=page, size=size
-    )
+async def search_books(name:Optional[str] = None, author:Optional[str] = None, tags:List[str] = Query(None), page:int = 1, size:int = 1):
+    result = await Books.search_books(name=name, author=author, tags=tags, page=page, size=size)
     return result
 
 
