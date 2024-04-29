@@ -60,7 +60,8 @@ async def validate_jwt(auth_key_header: str = Security(api_key_header_auth)):
         username = payload.get("email")
         if username is None:
             raise HTTPException(
-                status_code=400, detail="Invalid JWT: No username provided in payload"
+                status_code=400,
+                detail="Invalid JWT: No username provided in payload"
             )
 
         return username
