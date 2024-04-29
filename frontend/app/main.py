@@ -1,4 +1,5 @@
 # Import necessary libraries
+from app.widgets.search_form import search_form
 from app.widgets.sidebar_user_info import sidebar_user_info
 import streamlit as st
 from streamlit_star_rating import st_star_rating
@@ -21,6 +22,8 @@ st.title("Book Review Platform (BRP)")
 # Sidebar widgets
 sidebar_user_info()
 st.sidebar.divider()
+search_form()
+
 st.sidebar.title("Filters")
 selected_genre = st.sidebar.selectbox(
     "Select Genre", ["All"] + list(set(book.genre for book in books))

@@ -1,4 +1,4 @@
-from app.services.auth import AuthService
+from app.services.auth_service import AuthService
 import streamlit as st
 from streamlit_oauth import OAuth2Component
 import os
@@ -53,10 +53,12 @@ if "auth" not in st.session_state:
         # decode the id_token jwt and get the user's email address
         id_token = result["token"]["id_token"]
         email = decode_email(id_token)
-        user = AuthService.get_or_create_user(email,
-                                              result["token"]["id_token"])
         st.session_state["auth"] = email
         st.session_state["token"] = result["token"]
+        user = AuthService.get_or_create_user(
+            email, st.session_state["token"]["id_token"]
+        )
+
         st.session_state["user"] = user
         st.rerun()
 else:
