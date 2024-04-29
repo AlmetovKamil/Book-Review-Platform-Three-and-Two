@@ -8,15 +8,16 @@ from app.models.book import Book
 if "user" not in st.session_state:
     st.switch_page("pages/auth_page.py")
 
-if "selected_book" not in st.session_state or\
-     st.session_state.selected_book is None:
+if "selected_book" not in st.session_state or st.session_state.selected_book is None:
     st.switch_page("main.py")
 
 sidebar_user_info()
 st.sidebar.divider()
 st.sidebar.page_link("main.py", label="Home")
 
-st.session_state.selected_book = BooksService.get_by_id(st.session_state.selected_book.id)
+st.session_state.selected_book = BooksService.get_by_id(
+    st.session_state.selected_book.id
+)
 book: Book = st.session_state.selected_book
 st.title(book.title)
 columns = st.columns([1, 5])
@@ -26,16 +27,14 @@ with columns[1]:
     st.write(book.description)
     st.divider()
     if book.reviews is not None and len(book.reviews) > 0:
-                        ratings = [e.rating for e in book.reviews]
-                        rating = sum(ratings)/len(ratings)
-                        stars = st_star_rating(
-                            "",
-                            maxValue=5,
-                            defaultValue=rating,
-                            key='stars',
-                            size=25,
-                            read_only=True,
-                        )
+        stars = st_star_rating(
+            "",
+            maxValue=5,
+            defaultValue=book.get_rating(),
+            key="stars",
+            size=25,
+            read_only=True,
+        )
     st.write(f"Author: {book.author_name}")
     # st.write(f"Tags: {book.tags}")
     st.subheader("Reviews")
@@ -63,11 +62,9 @@ with columns[1]:
             "",
             maxValue=5,
             defaultValue=0,
-            key=review.username + review.review +
-            str(review.rating) + " new review",
+            key="new review",
             size=25,
         )
         if st.form_submit_button("Submit"):
-            BooksService.add_review(book.id,
-                                    st.session_state["review_text"], stars)
+            BooksService.add_review(book.id, st.session_state["review_text"], stars)
             st.rerun()
