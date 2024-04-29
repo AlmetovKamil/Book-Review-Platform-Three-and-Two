@@ -14,7 +14,7 @@ class BooksService:
         author: Optional[str] = None,
         tags: Optional[List[str]] = None,
         page: int = 1,
-        size: int = 50,
+        size: int = 16,
     ) -> List[Book]:
         client.auth = MyAuth(st.session_state["token"]["id_token"])
         params = {
@@ -31,7 +31,11 @@ class BooksService:
             f"{BASE_URL}/search_books",
             params=params,
         )
-        # print(response.json()["data"])
-        books = [Book(**json_book) for json_book in response.json()["data"]]
+        books = []
+        for json_book in response.json()["data"]:
+            if json_book is None:
+                print("NONE!")
+            else:
+                books.append(Book(**json_book))
         print(books)
         return books

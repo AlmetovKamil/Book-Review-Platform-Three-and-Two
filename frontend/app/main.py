@@ -1,5 +1,5 @@
 # Import necessary libraries
-from app.widgets.search_form import search_form
+from app.widgets.search_form import search_books, search_form
 from app.widgets.sidebar_user_info import sidebar_user_info
 from app.services.books_service import BooksService
 import streamlit as st
@@ -26,7 +26,11 @@ st.sidebar.divider()
 search_form()
 
 if "books" not in st.session_state:
-    st.session_state["books"] = BooksService.search_books("a")
+    st.session_state["page_number"] = 1
+    st.session_state["books"] = BooksService.search_books(
+        "a",
+        page=st.session_state["page_number"],
+    )
 books = st.session_state["books"]
 
 st.sidebar.title("Filters")
@@ -40,7 +44,7 @@ selected_rating = st.sidebar.slider(
 
 n_columns = 4
 # Display filtered book reviews
-st.header("Filtered Book Reviews")
+st.header("Books")
 for i, book in enumerate(books):
     if selected_genre == "All" or book.genre == selected_genre:
         if book.rating is None or book.rating >= selected_rating:
@@ -49,10 +53,10 @@ for i, book in enumerate(books):
             with columns[i % n_columns]:
                 # Book Tile
                 with st.container(border=True):
-                    st.image(
-                        book.cover_link, caption=book.author_name,
-                        use_column_width=True
-                    )
+                    if len(book.cover_link) > 0:
+                        st.image(
+                            book.cover_link, caption=book.author_name, use_column_width=True
+                        )
                     st.subheader(book.title)
                     if book.rating is not None:
                         stars = st_star_rating(
@@ -66,7 +70,10 @@ for i, book in enumerate(books):
                     if st.button("Details", key=i + 10000):
                         st.session_state.selected_book = book
                         st.switch_page("pages/book_page.py")
-
+if st.button("Load more"):
+    st.session_state["page_number"] += 1
+    search_books(append=True)
+    st.rerun()
 
 # Display personalized book recommendations (you can customize this section)
 st.header("Personalized Book Recommendations")
