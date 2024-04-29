@@ -24,6 +24,12 @@ st.title("Book Review Platform (BRP)")
 sidebar_user_info()
 st.sidebar.divider()
 search_form()
+show_favorites = st.sidebar.checkbox("Favorites", key="show_favorites")
+if show_favorites:
+    books = BooksService.get_favorites()
+    st.session_state["books"] = books
+elif "books" in st.session_state:
+    del st.session_state["books"]
 
 if "books" not in st.session_state:
     st.session_state["page_number"] = 1
@@ -55,33 +61,20 @@ for i, book in enumerate(books):
                 with st.container(border=True):
                     if len(book.cover_link) > 0:
                         st.image(
-                            book.cover_link, caption=book.author_name, use_column_width=True
+                            book.cover_link,
+                            caption=book.author_name,
+                            use_column_width=True,
                         )
                     st.subheader(book.title)
-                    if book.rating is not None:
-                        stars = st_star_rating(
-                            "",
-                            maxValue=5,
-                            defaultValue=book.rating,
-                            key=i,
-                            size=25,
-                            read_only=True,
-                        )
                     if st.button("Details", key=i + 10000):
-                        st.session_state.selected_book = book
+                        st.session_state.selected_book = \
+                            BooksService.get_by_id(book.id)
                         st.switch_page("pages/book_page.py")
 if st.button("Load more"):
     st.session_state["page_number"] += 1
     search_books(append=True)
     st.rerun()
 
-# Display personalized book recommendations (you can customize this section)
-st.header("Personalized Book Recommendations")
-st.write(
-    "Based on your reading history and preferences, \
-        we recommend the following books:"
-)
-# Add recommended book details here...
 
 # Footer
 st.markdown("---")
