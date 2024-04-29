@@ -1,10 +1,11 @@
 # Import necessary libraries
 from app.widgets.search_form import search_form
 from app.widgets.sidebar_user_info import sidebar_user_info
+from app.services.books_service import BooksService
 import streamlit as st
 from streamlit_star_rating import st_star_rating
 
-from app.sample_books import books
+# from app.sample_books import books
 
 # Sample book data
 # (you can replace this with actual data from your external API)
@@ -24,6 +25,10 @@ sidebar_user_info()
 st.sidebar.divider()
 search_form()
 
+if "books" not in st.session_state:
+    st.session_state["books"] = BooksService.search_books("a")
+books = st.session_state["books"]
+
 st.sidebar.title("Filters")
 selected_genre = st.sidebar.selectbox(
     "Select Genre", ["All"] + list(set(book.genre for book in books))
@@ -38,26 +43,26 @@ n_columns = 4
 st.header("Filtered Book Reviews")
 for i, book in enumerate(books):
     if selected_genre == "All" or book.genre == selected_genre:
-        if book.rating >= selected_rating:
+        if book.rating is None or book.rating >= selected_rating:
             if i % n_columns == 0:
                 columns = st.columns(n_columns)
             with columns[i % n_columns]:
                 # Book Tile
                 with st.container(border=True):
                     st.image(
-                        book.cover_image_url, caption=book.author,
+                        book.cover_link, caption=book.author_name,
                         use_column_width=True
                     )
                     st.subheader(book.title)
-                    st.write(f"Genre: {book.genre.name}")
-                    stars = st_star_rating(
-                        "",
-                        maxValue=5,
-                        defaultValue=book.rating,
-                        key=i,
-                        size=25,
-                        read_only=True,
-                    )
+                    if book.rating is not None:
+                        stars = st_star_rating(
+                            "",
+                            maxValue=5,
+                            defaultValue=book.rating,
+                            key=i,
+                            size=25,
+                            read_only=True,
+                        )
                     if st.button("Details", key=i + 10000):
                         st.session_state.selected_book = book
                         st.switch_page("pages/book_page.py")

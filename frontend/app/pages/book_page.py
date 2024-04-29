@@ -20,11 +20,11 @@ book: Book = st.session_state.selected_book
 st.title(book.title)
 columns = st.columns([1, 5])
 with columns[0]:
-    st.image(book.cover_image_url, caption=book.author)
+    st.image(book.cover_link, caption=book.author_name)
 with columns[1]:
     st.write(book.description)
     st.divider()
-    st.write(f"Author: {book.author}")
+    st.write(f"Author: {book.author_name}")
     st.write(f"Genre: {book.genre.name}")
     stars = st_star_rating(
         "",
