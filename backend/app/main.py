@@ -57,7 +57,7 @@ async def validate_jwt(auth_key_header: str = Security(api_key_header_auth)):
                              options={"verify_signature": False})
 
         # Get user name from JWT payload
-        username = payload.get("username")
+        username = payload.get("email")
         if username is None:
             raise HTTPException(
                 status_code=400,
