@@ -1,7 +1,14 @@
+import datetime
+
 import pytest
 from streamlit.testing.v1 import AppTest
 
-at = AppTest.from_file("../app/main.py").run()
+from app.models.user import User
+
+test_user = User(username="test_user", created_at=datetime.datetime.today())
+at = AppTest.from_file("../app/main.py")
+at.session_state["user"] = test_user
+at.run()
 
 
 def test_selected_rating():
