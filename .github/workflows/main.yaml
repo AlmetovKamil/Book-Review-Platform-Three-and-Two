@@ -15,8 +15,8 @@ jobs:
         with:
           poetry-version: '1.7.1'
 
-     # - name: Install dependencies for frontend
-     #   run: cd frontend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
+     - name: Install dependencies for frontend
+       run: cd frontend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
 
       - name: Install dependencies for backend
         run: cd backend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
