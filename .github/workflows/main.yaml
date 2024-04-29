@@ -1,0 +1,43 @@
+name: Book-Review-Platform
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.7.1'
+
+     # - name: Install dependencies for frontend
+     #   run: cd frontend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
+
+      - name: Install dependencies for backend
+        run: cd backend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
+
+    #  - name: Run flake8 for frontend
+    #    run: cd frontend; poetry run flake8 --max-complexity 10 app
+
+      - name: Run flake8 for backend
+        run: cd backend; poetry run flake8 --max-complexity 10 app
+
+    #  - name: Run bandit for frontend
+     #   run: cd frontend; poetry run bandit -r app
+
+      - name: Run bandit for backend
+        run: cd backend; poetry run bandit -r app
+
+      - name: Run pytest for backend
+        run: cd backend; poetry run pytest --cov=backend/app --cov-report=term --cov-fail-under=70
+
+      #- name: Run pytest for frontend
+      #  run: poetry run pytest frontend --cov=frontend/app --cov-report=term --cov-fail-under=70
+
+      - name: Run mutmut
+        run: cd backend; poetry run mutmut --paths-to-mutate backend --runner="pytest backend/tests"; poetry run mutmut --paths-to-mutate frontend --runner="pytest frontend/tests"; 

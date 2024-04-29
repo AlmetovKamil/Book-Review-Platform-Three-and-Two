@@ -1,4 +1,3 @@
-from sqlalchemy import Column, Integer, String
 from .database import Base
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, DateTime, Float
@@ -22,9 +21,9 @@ class UserCreate(BaseModel):
 
 
 class FavoriteBook(Base):
-    __tablename__= "favorite_books"
+    __tablename__ = "favorite_books"
 
-    id = Column(Integer, primary_key=True, index = True)
+    id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     book_id = Column(String)
 
@@ -42,4 +41,3 @@ class UserBookReview(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="book_reviews")
-
