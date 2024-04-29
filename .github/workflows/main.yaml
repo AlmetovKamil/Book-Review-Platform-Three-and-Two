@@ -19,16 +19,25 @@ jobs:
         run: cd frontend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
 
       - name: Install dependencies for backend
-        run: cd backend; poetry install;
+        run: cd backend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
 
       - name: Run flake8 for frontend
         run: cd frontend; poetry run flake8 --max-complexity 10 app
+
+      - name: Run flake8 for backend
+        run: cd backend; poetry run flake8 --max-complexity 10 app
+
+      - name: Run bandit for frontend
+        run: cd frontend; poetry run bandit -r app
 
       - name: Run bandit for backend
         run: cd backend; poetry run bandit -r app
 
       - name: Run pytest for backend
-        run: pytest backend --cov=backend/app --cov-report=term --cov-fail-under=70
+        run: poetry run pytest backend --cov=backend/app --cov-report=term --cov-fail-under=70
 
       - name: Run pytest for frontend
-        run: pytest frontend --cov=frontend/app --cov-report=term --cov-fail-under=70
+        run: poetry run pytest frontend --cov=frontend/app --cov-report=term --cov-fail-under=70
+
+      - name: Run mutmut
+        run: poetry run mutmut --paths-to-mutate backend --runner="pytest backend/tests"; poetry run mutmut --paths-to-mutate frontend --runner="pytest frontend/tests"; 
