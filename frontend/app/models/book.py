@@ -12,5 +12,10 @@ class Book(BaseModel):
     rating: Optional[float] = None
     genre: Genre = Genre.fiction
     cover_link: str
-    description: Optional[Dict] = None
+    description: Optional[str] | Optional[Dict] = None
     reviews: List[Review] = []
+
+    def get_rating(self):
+        ratings = [e.rating for e in self.reviews]
+        rating = sum(ratings)/len(ratings)
+        return rating
