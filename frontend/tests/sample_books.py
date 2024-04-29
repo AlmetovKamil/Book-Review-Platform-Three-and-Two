@@ -5,6 +5,7 @@ img_url = "https://encrypted-tbn0.gstatic.com/\
 
 sample_books_json = [
     {
+        "id": "id1",
         "title": "To Kill a Mockingbird1",
         "author": "Harper Lee",
         "rating": 4.5,
@@ -24,66 +25,11 @@ sample_books_json = [
             when she was ten.""",
     },
     {
+        "id": "id2",
         "title": "To Kill a Mockingbird2",
         "author": "Harper Lee",
         "rating": 4,
         "genre": "science",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird3",
-        "author": "Harper Lee",
-        "rating": 3.5,
-        "genre": "fiction",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird4",
-        "author": "Harper Lee",
-        "rating": 3,
-        "genre": "fiction",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird5",
-        "author": "Harper Lee",
-        "rating": 2.5,
-        "genre": "fiction",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird6",
-        "author": "Harper Lee",
-        "rating": 2,
-        "genre": "fiction",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird7",
-        "author": "Harper Lee",
-        "rating": 1.5,
-        "genre": "fiction",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird8",
-        "author": "Harper Lee",
-        "rating": 1.5,
-        "genre": "fiction",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird9",
-        "author": "Harper Lee",
-        "rating": 4.5,
-        "genre": "fiction",
-        "cover_link": img_url,
-    },
-    {
-        "title": "To Kill a Mockingbird10",
-        "author": "Harper Lee",
-        "rating": 4.5,
-        "genre": "fiction",
         "cover_link": img_url,
     },
 ]
