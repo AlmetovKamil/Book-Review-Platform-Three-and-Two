@@ -18,6 +18,9 @@ class BookDto:
     def set_reviews(self, reviews):
         self.reviews = reviews
 
+    def set_description(self, description):
+        self.description = description
+
     @classmethod
     def from_list_dict(cls, data:dict):
         cover = data.get('cover_i')
@@ -81,7 +84,9 @@ class Books:
                 tags_data = response_tags.json()
                 data["subjects"] = tags_data.get("subjects") if tags_data.get("subjects") else []
             
-            return BookDto.from_single_json(data)
+            result_book =  BookDto.from_single_json(data)
+            result_book.set_description(data.get("description", {}))
+            return result_book
 
 
     @staticmethod
