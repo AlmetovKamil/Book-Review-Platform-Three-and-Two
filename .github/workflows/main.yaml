@@ -34,7 +34,7 @@ jobs:
         run: cd backend; poetry run bandit -r app
 
       - name: Run pytest for backend
-        run: cd backend; poetry run pytest backend --cov=backend/app --cov-report=term --cov-fail-under=70
+        run: cd backend; poetry run pytest --cov=backend/app --cov-report=term --cov-fail-under=70
 
       #- name: Run pytest for frontend
       #  run: poetry run pytest frontend --cov=frontend/app --cov-report=term --cov-fail-under=70
