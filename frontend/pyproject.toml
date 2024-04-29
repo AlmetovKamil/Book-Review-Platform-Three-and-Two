@@ -15,6 +15,9 @@ python = "^3.11"
 streamlit = "^1.33.0"
 st-star-rating = "^0.0.6"
 pydantic = "^2.7.1"
+httpx = "^0.27.0"
+streamlit-oauth = "^0.1.8"
+python-dotenv = "^1.0.1"
 
 
 [build-system]

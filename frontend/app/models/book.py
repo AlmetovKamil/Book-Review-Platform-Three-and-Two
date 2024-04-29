@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.genre import Genre
+from app.models.genre import Genre
 
 
 class Book(BaseModel):
