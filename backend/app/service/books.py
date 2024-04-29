@@ -15,20 +15,30 @@ class BookDto:
         self.tags = tags
         self.cover_link = cover_link
 
+    def set_reviews(self, reviews):
+        self.reviews = reviews
+
+    def set_description(self, description):
+        self.description = description
+
     @classmethod
     def from_list_dict(cls, data:dict):
         cover = data.get('cover_i')
         cover_link = ""
         if cover is not None:
             cover_link = 'https://covers.openlibrary.org/b/id/' + str(cover) + '-M.jpg'
-        return cls(
-            id = data.get("editions").get("docs")[0].get("key").split('/')[-1],
-            title = data.get('title'),
-            author_name = ", ".join(data.get('author_name', [''])) if isinstance(data.get('author_name'), list) and data.get('author_name') else '',
-            publish_year = str(data.get('first_publish_year')),
-            tags = data.get('subject', []),
-            cover_link = cover_link
-        )
+        try:
+            return cls(
+                id = data.get("editions").get("docs")[0].get("key").split('/')[-1],
+                title = data.get('title'),
+                author_name = ", ".join(data.get('author_name', [''])) if isinstance(data.get('author_name'), list) and data.get('author_name') else '',
+                publish_year = str(data.get('first_publish_year')),
+                tags = data.get('subject', []),
+                cover_link = cover_link
+            )
+        except Exception as e:
+            print(data.get("key"))
+            print(e)
     
     @classmethod
     def from_single_json(cls, data:dict):
@@ -74,7 +84,9 @@ class Books:
                 tags_data = response_tags.json()
                 data["subjects"] = tags_data.get("subjects") if tags_data.get("subjects") else []
             
-            return BookDto.from_single_json(data)
+            result_book =  BookDto.from_single_json(data)
+            result_book.set_description(data.get("description", {}))
+            return result_book
 
 
     @staticmethod
@@ -109,10 +121,8 @@ class Books:
         if len(tags) == 0:
             result = await Books.search_books(None, author, None, 1, 15)
             return result
-        num_of_random_tags = random.randint(0, len(tags))
-        random_tags = random.sample(tags, num_of_random_tags)
+        random_tags = random.sample(tags, 2)
         print(tags)
-
         print(random_tags)
         result = await Books.search_books(None, None, random_tags, 1, 15)
-        return result
+        return result.get("data")
