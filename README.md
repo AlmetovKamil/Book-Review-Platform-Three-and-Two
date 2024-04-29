@@ -24,11 +24,12 @@ BRP is a dynamic online platform designed to foster a vibrant community of book 
 ### Backend
 
 ```bash
-pytest backend --cov=backend/app
+poetry run pytest . --cov=app
 ```
 
 ### Frontend
 
 ```bash
-pytest frontend --cov=frontend/app
+cd frontend
+poetry run pytest . --cov=app
 ```

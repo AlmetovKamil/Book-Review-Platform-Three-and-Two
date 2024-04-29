@@ -19,7 +19,7 @@ test_username = "test_user@gmail.com"
 test_token = create_access_token({"username": test_username})
 
 test_user = User(username=test_username, created_at=datetime.datetime.today())
-at = AppTest.from_file("../app/main.py")
+at = AppTest.from_file("../app/main.py", default_timeout=5)
 at.session_state["user"] = test_user
 at.session_state["token"] = {"id_token": test_token}
 at.run()
