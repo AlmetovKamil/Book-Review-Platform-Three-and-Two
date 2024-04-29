@@ -8,7 +8,8 @@ from app.models.book import Book
 if "user" not in st.session_state:
     st.switch_page("pages/auth_page.py")
 
-if "selected_book" not in st.session_state or st.session_state.selected_book is None:
+if "selected_book" not in st.session_state or \
+        st.session_state.selected_book is None:
     st.switch_page("main.py")
 
 sidebar_user_info()
@@ -36,7 +37,8 @@ with columns[1]:
             read_only=True,
         )
     st.write(f"Author: {book.author_name}")
-    if st.checkbox("Favorite", value=book.id in BooksService.get_favorites(True)):
+    if st.checkbox("Favorite",
+                   value=book.id in BooksService.get_favorites(True)):
         BooksService.add_to_favorites(book.id)
     else:
         BooksService.delete_from_favorites(book.id)
@@ -70,5 +72,6 @@ with columns[1]:
             size=25,
         )
         if st.form_submit_button("Submit"):
-            BooksService.add_review(book.id, st.session_state["review_text"], stars)
+            BooksService.add_review(book.id,
+                                    st.session_state["review_text"], stars)
             st.rerun()

@@ -1,6 +1,5 @@
 from typing import List, Optional
 from app.models.book import Book
-from app.models.review import Review
 from app.services.my_auth import client, MyAuth
 import streamlit as st
 import json

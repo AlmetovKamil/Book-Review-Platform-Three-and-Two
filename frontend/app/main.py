@@ -3,12 +3,7 @@ from app.widgets.search_form import search_books, search_form
 from app.widgets.sidebar_user_info import sidebar_user_info
 from app.services.books_service import BooksService
 import streamlit as st
-from streamlit_star_rating import st_star_rating
 
-# from app.sample_books import books
-
-# Sample book data
-# (you can replace this with actual data from your external API)
 
 if "user" not in st.session_state:
     st.switch_page("pages/auth_page.py")
@@ -57,7 +52,8 @@ for i, book in enumerate(books):
                 )
             st.subheader(book.title)
             if st.button("Details", key=i + 10000):
-                st.session_state.selected_book = BooksService.get_by_id(book.id)
+                st.session_state.selected_book = \
+                    BooksService.get_by_id(book.id)
                 st.switch_page("pages/book_page.py")
 if st.button("Load more"):
     st.session_state["page_number"] += 1
