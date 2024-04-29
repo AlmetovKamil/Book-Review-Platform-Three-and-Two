@@ -36,6 +36,10 @@ with columns[1]:
             read_only=True,
         )
     st.write(f"Author: {book.author_name}")
+    if st.checkbox("Favorite", value=book.id in BooksService.get_favorites(True)):
+        BooksService.add_to_favorites(book.id)
+    else:
+        BooksService.delete_from_favorites(book.id)
     # st.write(f"Tags: {book.tags}")
     st.subheader("Reviews")
     for i, review in enumerate(book.reviews):

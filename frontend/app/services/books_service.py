@@ -3,6 +3,7 @@ from app.models.book import Book
 from app.models.review import Review
 from app.services.my_auth import client, MyAuth
 import streamlit as st
+import json
 
 
 BASE_URL = "http://0.0.0.0:8000"
@@ -54,9 +55,27 @@ class BooksService:
             if json_book is None:
                 print("NONE!")
             else:
-                books.append(Book(**json_book))
+                if brief:
+                    books.append(json_book)
+                else:
+                    books.append(Book(**json_book))
         print(books)
         return books
+
+    @staticmethod
+    def add_to_favorites(book_id: str):
+        client.auth = MyAuth(st.session_state["token"]["id_token"])
+        client.post(
+            f"{BASE_URL}/user/books",
+            data=json.dumps([book_id]),
+        )
+
+    @staticmethod
+    def delete_from_favorites(book_id: str):
+        client.auth = MyAuth(st.session_state["token"]["id_token"])
+        client.delete(
+            f"{BASE_URL}/user/books/{book_id}",
+        )
 
     @staticmethod
     def get_by_id(book_id: str):
