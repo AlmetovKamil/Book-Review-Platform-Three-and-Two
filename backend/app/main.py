@@ -94,8 +94,14 @@ async def search_books(name:Optional[str] = None, author:Optional[str] = None, t
 
 
 @app.get("/book/{book_id}")
-async def get_book_by_id(book_id: str):
+async def get_book_by_id(book_id:str, db:Session = Depends(get_db), username: str = Depends(validate_jwt)):
     book = await Books.get_book_by_id(id=book_id)
+    book_reviews = db.query(models.UserBookReview).filter(models.UserBookReview.book_id == book.id)
+    user_reviews = []
+    for book_review in book_reviews:
+        user = db.query(models.User).filter(models.User.id == book_review.user_id).first()
+        user_reviews.append({"username": user.name, "review": book_review.review, "rating": book_review.rating})
+    book.set_reviews(user_reviews)
     return book
 
 
@@ -184,3 +190,19 @@ async def get_recommendation(username: str, db: Session = Depends(get_db)):
 async def check_function(book_id: str):
     book = await Books.get_recommendation(book_id)
     return book
+
+@app.post("/book/review")
+async def add_review(book_id:str, review:str, rating:int, db:Session = Depends(get_db), username: str = Depends(validate_jwt)):
+    db_user = db.query(models.User).filter(models.User.name == username).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="No such user")
+    try:
+        db_review = models.UserBookReview(user_id=db_user.id, book_id=book_id, review=review, rating=rating)
+        db.add(db_review)
+        db.commit()
+        db.refresh(db_review)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    return db_review
+
