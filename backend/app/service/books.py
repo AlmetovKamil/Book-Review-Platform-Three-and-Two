@@ -116,10 +116,8 @@ class Books:
         if len(tags) == 0:
             result = await Books.search_books(None, author, None, 1, 15)
             return result
-        num_of_random_tags = random.randint(0, len(tags))
-        random_tags = random.sample(tags, num_of_random_tags)
+        random_tags = random.sample(tags, 2)
         print(tags)
-
         print(random_tags)
         result = await Books.search_books(None, None, random_tags, 1, 15)
-        return result
+        return result.get("data")

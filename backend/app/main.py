@@ -83,7 +83,7 @@ def get_or_create_user(db: Session = Depends(get_db), username: str = Depends(va
 
 
 @app.get("/search_books")
-async def search_books(name:Optional[str] = None, author:Optional[str] = None, tags:List[str] = Query(None), page:int = 1, size:int = 1):
+async def search_books(name:Optional[str] = None, author:Optional[str] = None, tags:List[str] = Query(None), page:int = 1, size:int = 1, username: str = Depends(validate_jwt)):
     result = await Books.search_books(name=name, author=author, tags=tags, page=page, size=size)
     return result
 
@@ -98,8 +98,8 @@ async def get_book_by_id(book_id:str, db:Session = Depends(get_db), username: st
     book.set_reviews(user_reviews)
     return book
 
-@app.post("/user/{username}/books")
-async def choose_favorites(username:str, books:List[str], db:Session = Depends(get_db)):
+@app.post("/user/books")
+async def choose_favorites(books:List[str], db:Session = Depends(get_db), username:str = Depends(validate_jwt)):
     db_user = db.query(models.User).filter(models.User.name == username).first()
 
     if len(books) == 0 or not db_user :
@@ -125,8 +125,8 @@ async def choose_favorites(username:str, books:List[str], db:Session = Depends(g
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     
-@app.delete("/user/{username}/books/{book_id}")
-async def delete_favorites(username:str, book_id:str, db:Session = Depends(get_db)):
+@app.delete("/user/books/{book_id}")
+async def delete_favorites(book_id:str, db:Session = Depends(get_db), username:str = Depends(validate_jwt)):
     db_user = db.query(models.User).filter(models.User.name == username).first()
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid input data")      
@@ -145,8 +145,8 @@ async def delete_favorites(username:str, book_id:str, db:Session = Depends(get_d
 
 
 
-@app.get("/user/{username}/books")
-async def get_favorites(username:str, brief:bool, db: Session = Depends(get_db)):
+@app.get("/user/books")
+async def get_favorites(brief:bool, db: Session = Depends(get_db), username:str = Depends(validate_jwt)):
     db_user = db.query(models.User).filter(models.User.name == username).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="No such user")
@@ -157,17 +157,13 @@ async def get_favorites(username:str, brief:bool, db: Session = Depends(get_db))
     
     return [await Books.get_book_by_id(book) for book in books]
 
-@app.get("/user/{username}/books/recommendation")
-async def get_recommendation(username:str,db: Session = Depends(get_db)):
-    return
+@app.get("/books/{book_id}/recommendation")
+async def get_recommendation(book_id:str, username: str = Depends(validate_jwt)):
+    return await Books.get_recommendation(book_id)
 
-@app.get("/check")
-async def check_function(book_id:str):
-    book = await Books.get_recommendation(book_id)
-    return book
 
 @app.post("/book/review")
-async def add_review(book_id:str, review:str, rating:int, db:Session = Depends(get_db), username: str = Depends(validate_jwt)):
+async def add_review(book_id:str, review:str, rating:float, db:Session = Depends(get_db), username: str = Depends(validate_jwt)):
     db_user = db.query(models.User).filter(models.User.name == username).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="No such user")
