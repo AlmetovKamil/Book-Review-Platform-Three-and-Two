@@ -36,7 +36,7 @@ def get_db():
 
 
 # Auth details
-API_KEY_NAME = "Authorization"
+API_KEY_NAME = 'Authorization'
 
 api_key_header_auth = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
 
@@ -46,7 +46,7 @@ async def general_exception_handler(request: Request,
                                     exc: httpx.HTTPStatusError):
     return JSONResponse(
         status_code=exc.response.status_code,
-        content={"message": "An error occurred", "details": str(exc)},
+        content={"message": "An error occurred", "details": str(exc)}
     )
 
 
@@ -57,7 +57,7 @@ async def validate_jwt(auth_key_header: str = Security(api_key_header_auth)):
                              options={"verify_signature": False})
 
         # Get user name from JWT payload
-        username = payload.get("email")
+        username = payload.get("username")
         if username is None:
             raise HTTPException(
                 status_code=400,
