@@ -9,11 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # create an OAuth2Component instance
-CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
-CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
-AUTHORIZE_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"
-TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"
-REVOKE_ENDPOINT = "https://oauth2.googleapis.com/revoke"
+CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")  # nosec
+CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")  # nosec
+AUTHORIZE_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"  # nosec
+TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"  # nosec
+REVOKE_ENDPOINT = "https://oauth2.googleapis.com/revoke"  # nosec
 
 
 def decode_email(id_token):
