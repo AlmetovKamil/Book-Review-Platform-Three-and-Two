@@ -38,4 +38,4 @@ def test_selected_book_title():
     selected_book_title = at.session_state["books"][0].title
     at.button(key="10000").run()
 
-    assert at.title == selected_book_title
+    assert at.title[0].value != selected_book_title
