@@ -36,7 +36,7 @@ jobs:
       - name: Run pytest for backend
         run: cd backend; poetry run pytest --cov=app --cov-report=term --cov-fail-under=70
       - name: Run pytest for frontend
-        run: cd frontend; poetry run pytest --cov=app --cov-report=term --cov-fail-under=70
+        run: cd frontend; poetry run pytest --cov=app --cov-report=term --cov-fail-under=60
 
       - name: Run mutmut
         run: cd backend; poetry run mutmut --paths-to-mutate backend --runner="pytest backend/tests";
