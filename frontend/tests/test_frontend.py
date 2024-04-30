@@ -1,7 +1,8 @@
 import datetime
+import json
 from unittest.mock import patch
 
-from app.services.books_service import BooksService
+from app.services.books_service import BASE_URL, BooksService
 import jwt
 from streamlit.testing.v1 import AppTest
 
@@ -35,11 +36,33 @@ def test_get_favorites(get, session_state):
     assert BooksService.get_favorites() == books
 
 
+@patch("streamlit.session_state")
+@patch("httpx.Client.post")
+def test_add_review(post, session_state):
+    session_state["token"] = {"id_token": "mock"}
+    BooksService.add_review("book_id", "review", 3)
+    post.assert_called_once_with(
+        f"{BASE_URL}/book/review",
+        params={"book_id": "book_id", "review": "review", "rating": 3},
+    )
+
+
+@patch("streamlit.session_state")
+@patch("httpx.Client.post")
+def test_add_to_favorites(post, session_state):
+    session_state["token"] = {"id_token": "mock"}
+    BooksService.add_to_favorites("book_id")
+    post.assert_called_once_with(
+        f"{BASE_URL}/user/books",
+        data=json.dumps(["book_id"]),
+    )
+
+
 def test_sidebar_user_info():
     at = AppTest.from_function(sidebar_user_info)
     at.session_state["user"] = test_user
-    at.session_state["auth"] = ''
-    at.session_state["token"] = ''
+    at.session_state["auth"] = ""
+    at.session_state["token"] = ""
     at.run()
     assert at.title[0].value == "User"
     assert at.markdown[0].value == test_user.username
