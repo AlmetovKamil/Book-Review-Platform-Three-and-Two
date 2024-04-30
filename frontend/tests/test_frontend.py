@@ -1,11 +1,15 @@
 import datetime
+from unittest.mock import patch
 
+from app.services.books_service import BooksService
 import jwt
 from streamlit.testing.v1 import AppTest
 
 from app.models.user import User
 from app.models.book import Book
 from tests.sample_books import sample_books_json
+import httpx
+from app.widgets.sidebar_user_info import sidebar_user_info
 
 
 def create_access_token(payload):
@@ -20,15 +24,57 @@ test_username = "test_user@gmail.com"
 test_token = create_access_token({"username": test_username})
 
 test_user = User(username=test_username, created_at=datetime.datetime.today())
-at = AppTest.from_file("../app/main.py", default_timeout=5)
-at.session_state["user"] = test_user
-at.session_state["token"] = {"id_token": test_token}
-at.session_state["books"] = \
-    [Book(**json_book) for json_book in sample_books_json]
-at.run()
+books = [Book(**json_book) for json_book in sample_books_json]
 
 
-def test_selected_book():
-    at.button(key="10000").run()
+@patch("streamlit.session_state")
+@patch("httpx.Client.get")
+def test_get_favorites(get, session_state):
+    session_state["token"] = {"id_token": "mock"}
+    get.return_value = httpx.Response(200, json=sample_books_json)
+    assert BooksService.get_favorites() == books
 
-    assert at.title != "Book Review Platform (BRP)"
+
+def test_sidebar_user_info():
+    at = AppTest.from_function(sidebar_user_info)
+    at.session_state["user"] = test_user
+    at.session_state["auth"] = ''
+    at.session_state["token"] = ''
+    at.run()
+    assert at.title[0].value == "User"
+    assert at.markdown[0].value == test_user.username
+
+    at.button[0].click().run()
+    assert "user" not in at.session_state
+    assert "auth" not in at.session_state
+    assert "token" not in at.session_state
+
+
+@patch("app.services.books_service.BooksService.search_books")
+def test_main_page(search_books):
+    search_books.return_value = books
+    at = AppTest.from_file("../app/main.py", default_timeout=5)
+    at.session_state["user"] = test_user
+    at.session_state["token"] = {"id_token": test_token}
+    at.session_state["books"] = books
+    at.session_state["selected_book"] = books[0]
+    at.run()
+    assert at.header[0].value == "Books"
+    for i in range(len(books)):
+        assert at.subheader[i].value == books[i].title
+
+
+@patch("streamlit.switch_page")
+@patch("streamlit.sidebar.page_link")
+@patch("app.services.books_service.BooksService.get_by_id")
+def test_selected_book(get_by_id, page_link, switch_page):
+    get_by_id.return_value = books[0]
+    page_link.return_value = ""
+    switch_page.return_value = ""
+    at = AppTest.from_file("../app/pages/book_page.py", default_timeout=5)
+    at.session_state["user"] = test_user
+    at.session_state["token"] = {"id_token": test_token}
+    at.session_state["books"] = books
+    at.session_state["selected_book"] = books[0]
+    at.run()
+    assert at.title[0].value == at.session_state["books"][0].title

@@ -1,7 +1,6 @@
-import streamlit as st
-
-
 def sidebar_user_info():
+    import streamlit as st
+
     st.sidebar.title("User")
     st.sidebar.write(st.session_state["user"].username)
     # st.sidebar.write(st.session_state["token"]["id_token"])

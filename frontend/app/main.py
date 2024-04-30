@@ -22,10 +22,10 @@ search_form()
 if st.sidebar.checkbox("Favorites", key="show_favorites"):
     books = BooksService.get_favorites()
     st.session_state["books"] = books
-    st.session_state['favorite'] = True
+    st.session_state["favorite"] = True
 elif "favorite" in st.session_state:
     del st.session_state["books"]
-    del st.session_state['favorite']
+    del st.session_state["favorite"]
     st.rerun()
 
 if "books" not in st.session_state:
@@ -54,8 +54,9 @@ for i, book in enumerate(books):
                 )
             st.subheader(book.title)
             if st.button("Details", key=i + 10000):
-                st.session_state.selected_book = \
-                    BooksService.get_by_id(book.id)
+                st.session_state.selected_book = BooksService.get_by_id(
+                    book.id
+                )
                 st.switch_page("pages/book_page.py")
 if st.button("Load more"):
     st.session_state["page_number"] += 1
