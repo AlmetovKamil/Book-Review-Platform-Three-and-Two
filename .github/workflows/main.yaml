@@ -21,14 +21,14 @@ jobs:
       - name: Install dependencies for backend
         run: cd backend; poetry install; poetry add pytest pytest-cov flake8 mutmut bandit
 
-    #  - name: Run flake8 for frontend
-    #    run: cd frontend; poetry run flake8 --max-complexity 10 app
+      - name: Run flake8 for frontend
+        run: cd frontend; poetry run flake8 --max-complexity 10 app
 
       - name: Run flake8 for backend
         run: cd backend; poetry run flake8 --max-complexity 10 app
 
-    #  - name: Run bandit for frontend
-     #   run: cd frontend; poetry run bandit -r app
+      - name: Run bandit for frontend
+        run: cd frontend; poetry run bandit -r app
 
       - name: Run bandit for backend
         run: cd backend; poetry run bandit -r app
