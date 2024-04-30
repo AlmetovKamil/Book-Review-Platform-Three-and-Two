@@ -34,9 +34,8 @@ def test_selected_book():
     assert at.title != "Book Review Platform (BRP)"
 
 
-def test_user_can_search_book():
-    at.text_input(key="search_bar").set_value("Sample book")
-    at.button(key="search").run()
+def test_selected_book_title():
+    selected_book_title = at.session_state["books"][0].title
+    at.button(key="10000").run()
 
-    assert at.table(key="search_results").data is not None
-    
+    assert at.title == selected_book_title
